@@ -7,7 +7,6 @@
     <groupId>com.company</groupId>
     <artifactId>microservices-app</artifactId>
     <version>1.0-SNAPSHOT</version>
-
     <name>microservices-app</name>
     <url>https://truongvantuan.github.io/</url>
 
@@ -15,6 +14,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <spring.boot.dependencies.version>2.7.0</spring.boot.dependencies.version>
+        <spring.boot.maven.plugin>2.7.0</spring.boot.maven.plugin>
     </properties>
 
     <dependencyManagement>
@@ -22,7 +23,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.7.0</version>
+                <version>${spring.boot.dependencies.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -34,10 +35,21 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.maven.plugin}</version>
+                </plugin>
+            </plugins>
         </pluginManagement>
     </build>
 </project>
