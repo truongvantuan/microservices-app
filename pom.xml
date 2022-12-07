@@ -12,6 +12,7 @@
     <url>https://truongvantuan.github.io/</url>
     <modules>
         <module>customer</module>
+        <module>fraud</module>
     </modules>
 
     <properties>
