@@ -3,6 +3,7 @@ package com.company.customer.service;
 import com.company.clients.fraud.FraudClient;
 import com.company.clients.fraud.model.FraudCheckResponse;
 import com.company.clients.notification.NotificationClient;
+import com.company.clients.notification.model.NotificationRequest;
 import com.company.customer.model.Customer;
 import com.company.customer.model.CustomerRegistrationRequest;
 import com.company.customer.repository.CustomerRepository;
@@ -16,6 +17,7 @@ public class CustomerService {
     private final FraudClient fraudClient;
     private NotificationClient notificationClient;
     private CustomerRepository customerRepository;
+
     public void registerCustomer(CustomerRegistrationRequest customerRequest) {
         Customer customer = Customer.builder()
                 .firstName(customerRequest.firstName())
@@ -39,7 +41,12 @@ public class CustomerService {
         }
         customerRepository.save(customer);
 
-        notificationClient.notification(customer.getId());
+        notificationClient.sendNotification(
+                new NotificationRequest(
+                        customer.getId(),
+                        customer.getEmail(),
+                        String.format("Hi %s, welcome to Microservices App...", customer.getFirstName()))
+        );
 
     }
 }
