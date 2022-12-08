@@ -1,20 +1,21 @@
 package com.company.customer.service;
 
+import com.company.clients.fraud.FraudClient;
+import com.company.clients.fraud.model.FraudCheckResponse;
+import com.company.clients.notification.NotificationClient;
 import com.company.customer.model.Customer;
 import com.company.customer.model.CustomerRegistrationRequest;
-import com.company.customer.model.FraudCheckResponse;
 import com.company.customer.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @AllArgsConstructor
 public class CustomerService {
 
+    private final FraudClient fraudClient;
+    private NotificationClient notificationClient;
     private CustomerRepository customerRepository;
-    private RestTemplate restTemplate;
-
     public void registerCustomer(CustomerRegistrationRequest customerRequest) {
         Customer customer = Customer.builder()
                 .firstName(customerRequest.firstName())
@@ -24,17 +25,21 @@ public class CustomerService {
 
         // TODO: 12/7/22 check if email is valid
         // TODO: 12/7/22 check if email not taken
-        // TODO: 12/7/22 check if fraudster
-        FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
-                "http://localhost:8081/api/v1/fraud-check/{customerId}",
+
+        /*FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
+                "http://FRAUD:8081/api/v1/fraud-check/{customerId}",
                 FraudCheckResponse.class,
                 customer.getId()
-        );
-        if (fraudCheckResponse.isFraudster()) {
+        );*/
+
+        FraudCheckResponse fraudCheckResponse = fraudClient.isFraudster(customer.getId());
+
+        if (Boolean.TRUE.equals(fraudCheckResponse.isFraudster())) {
             throw new IllegalStateException("Fraudster");
         }
         customerRepository.save(customer);
 
-        // TODO: 12/7/22 send notification
+        notificationClient.notification(customer.getId());
+
     }
 }
